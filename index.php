@@ -10,13 +10,20 @@
     <div class="container-fluid">
         <nav class="row navbar">
                 <a href="index.php">Mail'odie</a>
-                <ul>
-                    <li><a href="">Accueil</a></li>
-                    <li><a href="">Articles</a></li>
-                    <li><a href="">Connexion</a></li>
-                    <li><a href="">Inscription</a></li>
-                </ul>
+                <div class="mainNavbar">
+                    <ul>
+                        <li><a href="">Accueil</a></li>
+                        <li><a href="">Articles</a></li>
+                        <li><a href="">Connexion</a></li>
+                        <li><a href="">Inscription</a></li>
+                        <li><a href="">Profil</a></li>
+                        <li><a href="">Déconnexion</a></li>
+                    </ul>
+                </div>
         </nav>
+        <div class="row">
+            <p>ça marche bien youpi</p>
+        </div>
 
 
 
