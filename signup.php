@@ -3,6 +3,9 @@
 // Inclusion de la fonction permettant de vérifier si un captcha est correct ou pas
 require 'recaptchavalid.php';
 
+// Inclusion de la fonction isConnected()
+require 'parts/functions.php';
+
 // Appel des variables
 if(
     isset($_POST['form-email']) &&
@@ -57,32 +60,45 @@ if(
             die('Il y a un problème sur la BDD : ' . $e->getMessage());
         }
 
-        // Requête préparée avec un marqueur, pour éviter les injections SQL
-        $response = $bdd->prepare("INSERT INTO users(email, password, firstname, lastname, admin, register_date, activated, register_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-        $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
-        $register_date = date('Y-m-d H:i:s');
+        // Si adresse mail déjà prise, avec fetch
+        $response = $bdd->prepare('SELECT * FROM users WHERE email = ? ');
 
         $response->execute([
-            $_POST['form-email'],
-            $hashedPassword,
-            $_POST['firstname'],
-            $_POST['lastname'],
-            0,
-            $register_date,
-            0,
-            0
+            $_POST['form-email']
         ]);
+        $user = $response->fetch();
 
-        // Si l'insertion a réussi , message de succès, sinon message d'erreur
-        if($response->rowCount() > 0){
-            $successMessage = 'Votre compte a bien été créé. Un mail de confirmation vous a été envoyé à votre adresse ' . $_POST['form-email'] . ' !';
-        }else{
-            $errors[] = 'Problème avec la base de données, veuillez réessayer.';
+        if(empty($user)){
+            // Requête préparée avec un marqueur, pour éviter les injections SQL
+            $response = $bdd->prepare("INSERT INTO users(email, password, firstname, lastname, admin, register_date, activated, register_token) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+
+            $hashedPassword = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $register_date = date('Y-m-d H:i:s');
+
+            $response->execute([
+                $_POST['form-email'],
+                $hashedPassword,
+                $_POST['firstname'],
+                $_POST['lastname'],
+                0,
+                $register_date,
+                0,
+                0
+            ]);
+
+            // Si l'insertion a réussi , message de succès, sinon message d'erreur
+            if($response->rowCount() > 0){
+                $successMessage = 'Votre compte a bien été créé. Un mail de confirmation vous a été envoyé à votre adresse ' . $_POST['form-email'] . ' !';
+            }else{
+                $errors[] = 'Problème avec la base de données, veuillez réessayer.';
+            }
+
+            // Fermeture de la requête
+            $response->closeCursor();
+        } else {
+            $errors[] = 'Un compte a déjà été créé avec cette adresse email.';
         }
 
-        // Fermeture de la requête
-        $response->closeCursor();
     }
 }
 
@@ -99,7 +115,10 @@ if(
 </head>
 <body>
     <div class="container-fluid">
-        <!-- Here comes the nav -->
+        <?php
+        // Inclusion du menu HTML
+        include 'parts/menu.php';
+        ?>
 
         <div class="row">
             <div class="col-12 col-md-4 offset-md-4 mt-5">
@@ -118,29 +137,31 @@ if(
                     echo '<p style="color:green;">'.htmlspecialchars($successMessage).'</p>';
                 } else {
 
+                    // Si le visiteur n'est pas connecté, on affiche le formulaire, sinon on affiche un message d'erreur
+                    if(!isConnected()){
                 ?>
                 <!-- Formulaire d'inscription -->
                 <form action="" method="POST">
-                    <legend>Formulaire</legend>
+                    <legend>Formulaire d'inscription</legend>
                     <div class="form-group">
                         <label for="form-email">Email :</label>
-                        <input id="form-email" name="form-email" class="form-control" type="email" placeholder="angus.young@gmail.com">
+                        <input id="form-email" name="form-email" class="form-control" type="email" placeholder="angus.young@gmail.com" required>
                     </div>
                     <div class="form-group">
                         <label for="InputPassword">Mot de passe :</label>
-                        <input type="password" name="password" class="form-control" id="InputPassword">
+                        <input type="password" name="password" class="form-control" id="InputPassword" required>
                     </div>
                     <div class="form-group">
                         <label for="InputPasswordConfirmation">Confirmation du mot de passe :</label>
-                        <input type="password" name="passwordConfirmation" class="form-control" id="InputPasswordConfirmation">
+                        <input type="password" name="passwordConfirmation" class="form-control" id="InputPasswordConfirmation" required>
                     </div>
                     <div class="form-group">
                         <label for="form-firstname">Prénom :</label>
-                        <input id="form-firstname" name="firstname" class="form-control" type="text" placeholder="Ex : Jimmy">
+                        <input id="form-firstname" name="firstname" class="form-control" type="text" placeholder="Ex : Jimmy" required>
                     </div>
                     <div class="form-group">
                         <label for="form-lastname">Nom :</label>
-                        <input id="form-lastname" name="lastname" class="form-control" type="text" placeholder="Ex : Page">
+                        <input id="form-lastname" name="lastname" class="form-control" type="text" placeholder="Ex : Page" required>
                     </div>
                     <div class="form-group">
                         <div class="g-recaptcha" data-sitekey="6LdSwusUAAAAAO_Ng4hdFsDyiUEk56Dl-7UPoTr5"></div>
@@ -148,6 +169,9 @@ if(
                     <button type="submit" class="btn btn-primary">Je m'inscris !</button>
                 </form>
                 <?php
+                    } else {
+                        echo '<p style="color:red;">Vous êtes déjà connecté !</p>';
+                    }
                 }
                 ?>
             </div>

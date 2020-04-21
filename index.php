@@ -1,3 +1,11 @@
+<?php
+
+require 'parts/functions.php';
+
+// Nécessaire pour pouvoir utiliser les variables de session
+session_start();
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,7 +16,11 @@
 </head>
 <body>
     <div class="container-fluid">
-        
+        <?php
+        // Inclusion du menu HTML
+        include 'parts/menu.php';
+        ?>
+
         <div class="row">
             <p>ça marche bien youpi</p>
         </div>

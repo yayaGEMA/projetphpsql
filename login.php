@@ -25,6 +25,9 @@ if(!isConnected()){
             $errors[] = 'Mot de passe invalide ! Il doit contenir au moins un chiffre de 0-9, une lettre minuscule, une lettre MAJUSCULE, un caractère spécial et doit être entre 8 et 1000 caractères.';
         }
 
+        // Vérifier dans la BDD la conformité de la connexion
+        
+
         // Si pas d'erreurs
         if(!isset($errors)){
 
@@ -55,7 +58,10 @@ if(!isConnected()){
 </head>
 <body>
     <div class="container-fluid">
-        <!-- Here comes the nav -->
+        <?php
+        // Inclusion du menu HTML
+        include 'parts/menu.php';
+        ?>
 
         <div class="row">
             <div class="col-12 col-md-4 offset-md-4 mt-5">
@@ -79,22 +85,22 @@ if(!isConnected()){
 
                 ?>
                 <form action="" method="POST">
-                    <legend>Formulaire</legend>
+                    <legend>Formulaire de connexion</legend>
                     <div class="form-group">
                         <label for="form-email">Email :</label>
-                        <input id="form-email" name="form-email" class="form-control" type="email" placeholder="angus.young@gmail.com">
+                        <input id="form-email" name="form-email" class="form-control" type="email" placeholder="angus.young@gmail.com" required>
                     </div>
                     <div class="form-group">
                         <label for="InputPassword">Mot de passe :</label>
-                        <input type="password" name="password" class="form-control" id="InputPassword">
+                        <input type="password" name="password" class="form-control" id="InputPassword" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Connexion</button>
                 </form>
 
                 <?php
-                } else {
-                    echo '<p style="color:red;">Vous êtes déjà connecté !</p>';
-                }
+                    } else {
+                        echo '<p style="color:red;">Vous êtes déjà connecté !</p>';
+                    }
                 }
 
                 ?>
