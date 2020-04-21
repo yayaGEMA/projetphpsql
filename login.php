@@ -20,27 +20,39 @@ if(!isConnected()){
             $errors[] = 'Email invalide';
         }
 
-        // Mot de passe
-        if (!preg_match('/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[ !@#=<>]).{8,1000}$/ ' , $_POST['password'] )){
-            $errors[] = 'Mot de passe invalide ! Il doit contenir au moins un chiffre de 0-9, une lettre minuscule, une lettre MAJUSCULE, un caractère spécial et doit être entre 8 et 1000 caractères.';
+        // Connexion à la base de données
+        try{
+            $bdd = new PDO('mysql:host=localhost;dbname=mailodie;charset=utf8', 'root', '');
+            //Affichage des erreurs SQL si il y en a
+            $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch(Exception $e){
+            die('Il y a un problème sur la BDD : ' . $e->getMessage());
         }
 
-        // Vérifier dans la BDD la conformité de la connexion
-        
+        // Vérification de l'adresse mail dans la BDD
+        $response = $bdd->prepare('SELECT * FROM users WHERE email = ?');
 
-        // Si pas d'erreurs
-        if(!isset($errors)){
+        $response->execute([
+            $_POST['form-email']
+        ]);
+        $user = $response->fetch();
 
-            // Message de succès
-            $successMessage = 'Vous êtes bien connecté !';
+        // Si le compte n'existe pas, message d'erreur
+        if(empty($user)){
+            $errors[] = 'Aucun compte enregistré avec cette adresse mail.';
+        } else{
 
-            // On crée un sous tableau "user" dans la session. Dans ce tableau on y met le mail et le mdp envoyés par le formulaire
-            $_SESSION['user'] =
-            [
-                'form-email' => $_POST['form-email'],
-                'password' => $_POST['password'],
-            ];
+            // Si le MDP ne correspond pas, message d'erreur
+            if(!password_verify($_POST['password'], $user['password'])){
+                $errors[] = 'Mot de passe incorrect ! Veuillez réessayer.';
+            } else{
 
+                // Message de succès
+                $successMessage = 'Vous êtes bien connecté !';
+
+                // On crée un sous tableau "user" dans la session. Dans ce tableau on y met le mail et le mdp envoyés par le formulaire
+                $_SESSION['user'] = $user;
+            }
         }
 
     }
