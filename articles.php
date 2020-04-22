@@ -42,6 +42,13 @@ session_start();
                         <th scope="col">Titre</th>
                         <th scope="col">Auteur</th>
                         <th scope="col">Date de parution</th>
+                        <?php
+                        if(isConnected()){
+                            if($_SESSION['user']['admin'] ==1){
+                                echo '<th scope="col"></th>';
+                            }
+                        }
+                        ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,7 +63,7 @@ session_start();
                     }
 
                     // Récupération des données dans la table articles
-                    $response = $bdd->query('SELECT articles.title, users.firstname, users.lastname, articles.create_date FROM articles INNER JOIN users ON articles.author = users.id ORDER BY create_date');
+                    $response = $bdd->query('SELECT articles.id, articles.title, users.firstname, users.lastname, articles.create_date FROM articles INNER JOIN users ON articles.author = users.id ORDER BY create_date');
                     $articles = $response->fetchAll(PDO::FETCH_ASSOC);
 
 
@@ -69,10 +76,15 @@ session_start();
                         foreach($articles as $article){
                             echo
                             '<tr>
-                            <th scope="row">'. htmlspecialchars($article['title']) .'</th>
+                            <th scope="row"><a href="article.php?id='.$article['id'].'">'. htmlspecialchars($article['title']) .'</a></th>
                             <td>' . htmlspecialchars($article['firstname']) . ' ' . htmlspecialchars($article['lastname']) .'</td>
-                            <td>' . htmlspecialchars(strftime('%A %d %B %Y, %Hh %Mm %Ss', strtotime($article['create_date']))) . '</td>
-                            </tr>';
+                            <td>' . htmlspecialchars(strftime('%A %d %B %Y, %Hh %Mm %Ss', strtotime($article['create_date']))) . '</td>';
+                            if(isConnected()){
+                                if($_SESSION['user']['admin'] ==1){
+                                    echo '<th scope="col"><a href="supparticle.php" class="text-decoration-none text-danger">X</a></th>';
+                                }
+                            }
+                            echo '</tr>';
                         }
                     }
 

@@ -5,6 +5,7 @@ function isConnected(){
     return isset($_SESSION['user']);
 }
 
+
 // Fonction qui retourne le statut de l'user
 function isAdmin(){
     if(isConnected()){
