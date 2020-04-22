@@ -28,13 +28,22 @@ session_start();
                 <?php
                 // Si l'utilisateur est bien connecté, on affiche un message de salutation avec ses infos tirées depuis la session, sinon message d'erreur
                 if(isConnected()){
+                    if($_SESSION['user']['admin'] ==1){
+                        $statut = "Administrateur";
+                    }else {
+                        $statut = "Membre";
+                    }
+                    function frenchTimeStamp(){
+                        $getTimestamp = strtotime($_SESSION['user']['register_date']);
+                        return strftime('%A %d %B %Y, %Hh %Mm %Ss', $getTimestamp);
+                    }
                     echo 
-                        "<ul class=\"list-unstyled border border-dark rounded mt-4 p-2\">
-                            <li class=\"p-2 border-bottom\"><strong>Prénom : </strong>" . $_SESSION['user']['firstname'] . "</li>
-                            <li class=\"p-2 border-bottom\"><strong>Nom : </strong>" . $_SESSION['user']['lastname'] . "</li>
-                            <li class=\"p-2 border-bottom\"><strong>Adresse mail : </strong>" . $_SESSION['user']['email'] . "</li>
-                            <li class=\"p-2 border-bottom\"><strong>Statut : </strong>" . $_SESSION['user']['admin'] . "</li>
-                            <li class=\"p-2 \"><strong>Date d'inscription : </strong>" . $_SESSION['user']['register_date'] . "</li>
+                        "<ul class=\"list-unstyled border rounded mt-4 p-2\">
+                            <li class=\"p-3 border-bottom\"><strong>Prénom : </strong>" . $_SESSION['user']['firstname'] . "</li>
+                            <li class=\"p-3 border-bottom\"><strong>Nom : </strong>" . $_SESSION['user']['lastname'] . "</li>
+                            <li class=\"p-3 border-bottom\"><strong>Adresse mail : </strong>" . $_SESSION['user']['email'] . "</li>
+                            <li class=\"p-3 border-bottom\"><strong>Statut : </strong>" . $statut . "</li>
+                            <li class=\"p-3 \"><strong>Date d'inscription : </strong>" . frenchTimeStamp() . "</li>
                         </ul>"
                     ;
                 } else {

@@ -1,0 +1,89 @@
+https://sharemycode.fr/wf3creusotprojetphp
+
+
+Petit rappel commandes GIT :
+	0- J'ai terminé de faire un bout fonctionnel du site :
+    1- git status  (liste les changements réalisés sur l'espace de travail, à ce stade tout doit être rouge)
+    2- git add .   (ajoute tous les fichiers modifiés à l'espace de validation pour le prochain commit)
+    3- git status  (à ce stade tout doit être vert, sinon recommencer depuis l'étape 2)
+    4- git commit -m "Description"  (crée un commit avec la description donnée)
+    5- git status  (si tout est blanc (ni rouge, ni vert), alors passer à la suite, sinon refaire depuis l'étape 2)
+    6- git push    (envoi les derniers commits au serveur)
+
+Obligations :
+    - Versionner le projet sur GIT et envoyer le lien au formateur
+    - Utilisation de Bootstrap
+    - Sécurités (pas de faille XSS ni d'injection SQL)
+    - Suivre le schéma MCD fourni : https://www.anthony-demon.com/projetphpprocedural/docs/MCD%20-%20MySQL.jpg
+    - Les formulaires devront vérifier leurs champs pour être conforme avec la base de données
+    
+Lien du site d'exemple : https://www.anthony-demon.com/projetphpprocedural/
+
+1) Créer la base de données en suivant le schéma MCD
+
+
+2) Création d'un système d'authentification avec les pages suivantes :
+    - page d'inscription
+        -> Accessible uniquement aux personnes non connectées
+        -> Si l'email est déjà utilisé par un autre compte, créer une erreur au lieu de créer le compte
+
+    - page de connexion
+        -> Accessible uniquement aux personnes non connectées
+
+    - page de déconnexion
+        -> Accessible uniquement aux personnes connectées
+
+    - page de profil
+        -> Accessible uniquement aux personnes connectées
+
+
+
+3) Création d'un système d'articles :
+    - Page de création d'un nouvel article
+        -> Accessible uniquement aux administrateurs
+
+    - Page listant tous les articles
+        -> Accessible à tous les utilisateurs (connectés, non connectés et administrateurs)
+        -> Pour les administrateurs uniquement, afficher une petite croix à côté de chaque article, permettant de le supprimer en emmenant sur la page de suppression d'article
+
+    - Page affichant un article dans le détail avec le contenu complet
+        -> Accessible à tous les utilisateurs (connectés, non connectés et administrateurs)
+        -> Pour conserver les retours à la ligne, voir la fonction nl2br() : https://www.php.net/nl2br
+
+    - Page d'accueil affichant les deux derniers articles publiés
+        -> Affiche les 2 derniers articles
+        -> N'afficher que les 50 premiers caractères du contenu des deux articles (voir fonction substr() : https://www.php.net/substr ) suivi d'un lien "lire la suite"
+
+    - page de recherche d'article (en haut à droite dans le menu)
+        -> Accessible à tous les utilisateurs (connectés, non connectés et administrateurs)
+        -> La recherche doit se faire dans le titre et le contenu des articles
+
+    - page de suppression d'un article
+        -> Accessible uniquement aux administrateurs
+
+
+BONUS :
+
+    - Créer un système d'activation de compte permettant d'empêcher la connexion à ce compte tant que l'utilisateur ne l'aura pas activé.
+
+        Comment fonctionne un système d'activation ?
+
+        Premièrement, il faut que chaque compte possède un champ "activated" et un champ "register_token" afin d'y stocker dans le premier un booléen 0 ou 1 (0 = compte pas activé, 1 = compte activé) et dans le second une chaîne de texte aléatoire.
+
+
+        Pour chaque compte créé, on met 0 dans "activated" et une chaîne aléatoire (par exemple "md5(rand() . time() . uniqid())" ).
+
+        Après avoir inséré le compte dans la base de données sur la page d'inscription, il faut envoyer un email à l'utilisateur contenant un lien vers une page activation, avec son numéro ID et son token dans l'URL, dans le genre : " activate.php?id=4&token=ccd7d6f16c3ca2d8e3fa7c5501496287 "
+
+        Le token est présent uniquement pour rendre l'url d'activation du compte impossible à deviner, ce qui oblige l'utilisateur à mettre un email existant auquel il a accès.
+
+
+        Sur la page d'activation, il faut :
+            1) Vérifier si les 2 variables ($_GET['id'] et $_GET['token']) existent bien dans l'url (Appel des variables)
+            2) Vérifier si les deux champs sont valides (blocs des verifs)
+            3) Si pas d'erreur avant, vérifier si il existe bien un compte dont le numéro est passé dans l'url, sinon erreur
+            4) Si pas d'erreur avant, vérifier si le token correspond bien à celui du compte, sinon erreur
+            5) Si pas d'erreur avant, vérifier si le compte n'est pas déjà activé, sinon erreur
+            6) Passer le champ "activated" du compte de 0 à 1
+
+    - Protéger la partie suppression des articles contre les failles CSRF avec un token de sécurité (à voir sur l'exemple en ligne, regarder comment les liens sont faits)

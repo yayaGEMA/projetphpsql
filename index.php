@@ -22,7 +22,7 @@ session_start();
         ?>
 
         <div class="row">
-            <p>ça marche bien youpi</p>
+            <h1 class="text-center col-12 mt-4">Bienvenue sur Mail'odie</h1>
         </div>
 
 
