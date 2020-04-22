@@ -81,7 +81,7 @@ session_start();
                             <td>' . htmlspecialchars(strftime('%A %d %B %Y, %Hh %Mm %Ss', strtotime($article['create_date']))) . '</td>';
                             if(isConnected()){
                                 if($_SESSION['user']['admin'] ==1){
-                                    echo '<th scope="col"><a href="supparticle.php" class="text-decoration-none text-danger">X</a></th>';
+                                    echo '<th scope="col"><a href="supparticle.php?id='.$article['id'].'" class="text-decoration-none text-danger">X</a></th>';
                                 }
                             }
                             echo '</tr>';

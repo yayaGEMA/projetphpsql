@@ -90,7 +90,10 @@ if(
 
                 // Si le message de succès existe, on l'affiche
                 if(isset($successMessage)){
-                    echo '<p style="color:green;">'.htmlspecialchars($successMessage).'</p>';
+                    echo '<p style="color:green;">'.htmlspecialchars($successMessage).'</p>
+                    <p class="row">
+                    <div class="text-center"><a href="articles.php">Retour à la liste des articles</a></div>
+                    </p>';
                 } else {
 
                     // Si le visiteur n'est pas admin, on affiche le formulaire, sinon on affiche un message d'erreur

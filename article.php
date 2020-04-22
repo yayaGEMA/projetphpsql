@@ -54,30 +54,32 @@ if(isset($_GET['id'])){
     <div class="container-fluid">
         <?php
         include 'parts/menu.php';
-        ?>
-        <!-- H1 -->
-        <div class ="row">
-            <h1 class="text-center col-12 mt-4"><?php echo htmlspecialchars($article['title']); ?></h1>
-        </div>
-        <p class="row">
+
+        if(empty($article)){
+            echo '<h1 class="text-danger">Oups ! Il n\'y a aucun article à afficher.</h1>
+            <p class="row">
             <div class="text-center"><a href="articles.php">Retour à la liste des articles</a></div>
-        </p>
+            </p>';
+        } else{
+            ?>
+        <div class="row">
+            <h1 class="text-center col-12 mt-4"><?php echo htmlspecialchars($article['title']); ?></h1>
+            <p class="row">
+            <div class="text-center"><a href="articles.php">Retour à la liste des articles</a></div>
+            </p>
+        </div>
         <div class="col-md-6 offset-md-3">
             <?php
-
-            function frenchTimeStamp(){
-                $getTimestamp = strtotime($_SESSION['user']['register_date']);
-                return strftime('%A %d %B %Y, %Hh %Mm %Ss', $getTimestamp);
-            }
-
             echo 
                 "<ul class=\"list-unstyled border rounded mt-4 p-2\">
-                    <li class=\"p-3 border-bottom\">" . nl2br(htmlspecialchars($article['content'])) . "</li>
-                    <li class=\"p-3 \">posté par <strong>".htmlspecialchars($article['firstname'])." ". htmlspecialchars($article['lastname']) . "</strong> le " . frenchTimeStamp() . "</li>
+                    <li class=\"p-3 border-bottom text-break\">" . nl2br(htmlspecialchars($article['content'])) . "</li>
+                    <li class=\"p-3 \">posté par <strong>".htmlspecialchars($article['firstname'])." ". htmlspecialchars($article['lastname']) . "</strong> le " . htmlspecialchars(strftime('%A %d %B %Y, %Hh %Mm %Ss', strtotime($article['create_date']))). "</li>
                 </ul>"
-            ;
-            ?>
-        </div>
+            ; ?>
+        </div>;
+        <?php
+        }
+        ?>
     </div>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>

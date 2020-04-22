@@ -27,14 +27,49 @@ session_start();
             <?php
             // Si le visiteur n'est pas admin, on affiche le formulaire, sinon on affiche un message d'erreur
             if($_SESSION['user']['admin'] ==1){
+                // Appel des variables
+                if(isset($_GET['id'])){
+
+                    // Bloc des vérifs
+                    if(!preg_match('/^\d{1,25}$/ ', $_GET['id'])){
+                        $errors[] = 'Article invalide !';
+                    }
+
+                    // Si pas d'erreurs
+                    if(!isset($errors)){
+
+                        // Connexion à la base de données
+                        try{
+                            $bdd = new PDO('mysql:host=localhost;dbname=mailodie;charset=utf8', 'root', '');
+                            //Affichage des erreurs SQL si il y en a
+                            $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        } catch(Exception $e){
+                            die('Il y a un problème sur la BDD : ' . $e->getMessage());
+                        }
+
+                        // Requête préparée avec un marqueur, pour éviter les injections SQL
+                        $response = $bdd->prepare("DELETE FROM articles WHERE id = ?");
+                        $response->execute([
+                            $_GET['id']
+                        ]);
+
+                        // Fermeture de la requête
+                        $response->closeCursor();
+                    }
+                }else {
+                    $errors[] = 'Aucun article existant !';
+                }
+                echo '<h3 class="text-center col-12 mt-4 text-success">L\'article a correctement été supprimé.</h3>';
+            } else {
+                echo '<h3 class="text-center col-12 mt-4 text-danger">Vous n\'avez pas les droits d\'administration qui vous permettent de supprimer un article.</h3>';
+            }
             ?>
-            
     </div>
+
+    <!-- ADRESSE URL de suppression d'article
+https://www.anthony-demon.com/projetphpprocedural/admin-delete-article.php?id=7&csrf-token=5bb6d1b9be11ea402bd5ee64abfe0aac
+ -->
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>
-
-
-<!-- ADRESSE URL de suppression d'article
-https://www.anthony-demon.com/projetphpprocedural/admin-delete-article.php?id=7&csrf-token=5bb6d1b9be11ea402bd5ee64abfe0aac
- -->

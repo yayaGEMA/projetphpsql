@@ -23,13 +23,11 @@ session_start();
 
         <div class="row">
             <h1 class="text-center col-12 mt-4">Bienvenue sur Mail'odie</h1>
+            <h3 class="text-center col-12 mt-2">Le site de partage d'écriture musicale</h3>
         </div>
-
-
-
-
-
-
+        <div class="row">
+            <p class=" col-6 offset-3 mt-4">Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias totam fugit voluptas ea hic minima facilis quasi esse necessitatibus saepe dolorum, tempore non ipsum molestias vel ratione. Ipsum, alias voluptatum.</p>
+        </div>
     </div>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
